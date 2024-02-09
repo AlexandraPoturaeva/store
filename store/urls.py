@@ -18,6 +18,7 @@ schema_view = get_schema_view(
 
 router = routers.DefaultRouter()
 
+
 urlpatterns = [
     path(
         'swagger<format>/',
@@ -35,6 +36,7 @@ urlpatterns = [
         name='schema-redoc',
     ),
     path('', include(router.urls)),
+    path('users/', include('users.urls')),
 ]
 
 urlpatterns += router.urls
