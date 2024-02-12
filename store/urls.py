@@ -2,6 +2,9 @@ from rest_framework import routers, permissions
 from django.urls import path, include
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from django.contrib import admin
+from django.conf.urls.static import static
+from django.conf import settings
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -20,6 +23,7 @@ router = routers.DefaultRouter()
 
 
 urlpatterns = [
+    path("admin/", admin.site.urls),
     path(
         'swagger<format>/',
         schema_view.without_ui(cache_timeout=0),
@@ -37,6 +41,7 @@ urlpatterns = [
     ),
     path('', include(router.urls)),
     path('users/', include('users.urls')),
-]
+    path('', include('products.urls')),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += router.urls
