@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import User
+from products.models import ShoppingCart
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -16,4 +17,5 @@ class UserSerializer(serializers.ModelSerializer):
         )
         user.set_password(validated_data['password'])
         user.save()
+        ShoppingCart.objects.create(user=user)
         return user

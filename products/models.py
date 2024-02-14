@@ -1,5 +1,7 @@
+from django.core.validators import MinValueValidator
 from django.db import models
 from versatileimagefield.fields import VersatileImageField
+from decimal import Decimal
 
 
 def get_upload_path(*args):
@@ -65,7 +67,11 @@ class Product(TimeStampedModel):
         max_length=100,
         unique=True,
     )
-    price = models.DecimalField(max_digits=9, decimal_places=2)
+    price = models.DecimalField(
+        max_digits=9,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal('0.01'))],
+    )
     cover = VersatileImageField(upload_to=get_upload_path)
     subcategory = models.ForeignKey(
         to=SubCategory,
@@ -75,3 +81,29 @@ class Product(TimeStampedModel):
 
     def __str__(self):
         return self.title
+
+
+class ShoppingCart(TimeStampedModel):
+    user = models.OneToOneField(to='users.User', on_delete=models.CASCADE)
+    products = models.ManyToManyField(to=Product, through='ProductInCart')
+
+    def __str__(self):
+        return f'Shopping cart of user {self.user.email}'
+
+
+class ProductInCart(TimeStampedModel):
+    product = models.ForeignKey(
+        to=Product,
+        on_delete=models.CASCADE,
+    )
+    cart = models.ForeignKey(
+        to=ShoppingCart,
+        on_delete=models.CASCADE,
+    )
+    quantity = models.PositiveSmallIntegerField(default=0)
+
+    def __str__(self):
+        return (
+            f'Product: {self.product.title}'
+            f'Quantity: {self.quantity}'
+        )
