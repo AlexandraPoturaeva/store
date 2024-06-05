@@ -152,3 +152,13 @@ VERSATILEIMAGEFIELD_RENDITION_KEY_SETS = {
         ('large', 'url'),
     ],
 }
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'token': {
+            'type': 'apiKey',
+            'in': 'header',
+            'name': 'Authorization',
+        },
+    },
+}
